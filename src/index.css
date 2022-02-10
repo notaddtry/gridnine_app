@@ -11,3 +11,67 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.card-list_wrapper {
+  width: 60%;
+  display: flex;
+
+  flex-direction: column;
+  margin: 0 auto 2rem;
+}
+.card-item_wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem 0px 0px 0px;
+}
+.card-item_wrapper > * {
+  margin: 0px 0px 0.5rem 0px;
+}
+.card-item_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgb(90, 90, 255);
+  color: #fff;
+}
+.card-item_header-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.card-item_header-price > * {
+  text-align: right;
+}
+.card-trip_wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.card-trip_header {
+}
+.card-trip_main {
+  display: flex;
+  flex-direction: column;
+}
+.card-trip_time {
+  display: flex;
+}
+.card-trip_time > * {
+  flex: 1 1 100%;
+}
+.card-item_transfer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin: 0.25rem 0px;
+}
+.card-trip_footer {
+}
+.btn-select {
+  border: none;
+  background: orange;
+  color: #fff;
+  padding: 0.5rem;
+}
+.btn_show-more {
+}

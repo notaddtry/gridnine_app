@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import CardList from './components/Card/CardList'
+import { loadFlights } from './utils/api'
 
 function App() {
+  const [flights, setFlights] = useState([])
+  const [count, setCount] = useState(5)
+
+  const handleShowMore = () => {
+    setCount((count) => count + 5)
+  }
+
+  useEffect(() => {
+    const data = loadFlights().flights.slice(0, count)
+    setFlights(data)
+    console.log(flights)
+  }, [count])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CardList flights={flights} handleShowMore={handleShowMore} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
