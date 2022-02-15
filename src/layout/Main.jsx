@@ -1,74 +1,136 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import CardList from '../components/Card/CardList'
+import Sidebar from '../components/SideBar/Sidebar'
 import { loadFlights } from '../utils/api'
 import { filterCost, filterDate } from '../components/helpers/filter/filterCost'
-import Sidebar from '../components/SideBar/Sidebar'
 
 const Main = () => {
+  const memoFlights = useMemo(() => loadFlights().flights, [])
   const [flights, setFlights] = useState([])
   const [count, setCount] = useState(5)
+  const [filterByCountTransfer, setFilterByCountTransfer] = useState({
+    filterByOneTransfer: false,
+    filterByMoreTransfer: false,
+  })
+  const [filterValue, setFilterValue] = useState('')
+  const [sortValue, setSortValue] = useState('')
+  const [price, setPrice] = useState({
+    minPrice: 0,
+    maxPrice: Infinity,
+  })
 
   const handleShowMore = () => {
     setCount((count) => count + 5)
   }
 
-  const handleSort = (choose) => {
-    let filteredFlights = [...flights]
+  const handleSort = (chooseSort, arr) => {
+    let filteredFlights = []
+    if (!arr) {
+      filteredFlights = [...flights]
+    } else {
+      filteredFlights = [...arr]
+    }
 
-    switch (choose) {
+    switch (chooseSort) {
       case 'TO_MAX_COST':
         filteredFlights = filteredFlights.sort((a, b) => filterCost(a, b))
-        setFlights(filteredFlights)
+        return filteredFlights
 
-        break
       case 'TO_LOWER_COST':
         filteredFlights = filteredFlights.sort((a, b) => filterCost(a, b))
-        setFlights(filteredFlights.reverse())
+        return filteredFlights.reverse()
 
-        break
       case 'TO_LOWER_TIME':
         filteredFlights = filteredFlights.sort((a, b) => filterDate(a, b))
-        setFlights(filteredFlights)
+        return filteredFlights
 
       default:
-        return
+        return filteredFlights
     }
   }
 
-  const handleFilter = (choose) => {
+  const handleFilter = (chooseFilter, arr) => {
     let filteredFlights = []
-    const allFlights = loadFlights().flights
-    switch (choose) {
-      case 'ONE_TRANSFER':
-        filteredFlights = allFlights.filter(
-          (flight) =>
-            flight.flight.legs[0].segments.length === 2 &&
-            flight.flight.legs[1].segments.length === 2
-        )
-        setFlights(filteredFlights)
-        break
-      case 'NO_TRANSFER':
-        filteredFlights = allFlights.filter(
-          (flight) =>
-            flight.flight.legs[0].segments.length === 1 &&
-            flight.flight.legs[1].segments.length === 1
-        )
-        setFlights(filteredFlights)
-        break
-      default:
-        return
+    if (!arr) {
+      filteredFlights = [...memoFlights]
+    } else {
+      filteredFlights = [...arr]
     }
+
+    switch (chooseFilter) {
+      case 'ONE_TRANSFER':
+        if (filterByCountTransfer.filterByOneTransfer) {
+          filteredFlights = filteredFlights.filter(
+            (flight) =>
+              flight.flight.legs[0].segments.length === 2 &&
+              flight.flight.legs[1].segments.length === 2
+          )
+        } else if (!filterByCountTransfer.filterByOneTransfer) {
+          filteredFlights = [...filteredFlights] //TODO
+        }
+
+        return filteredFlights.slice(0, count)
+
+      case 'NO_TRANSFER':
+        if (filterByCountTransfer.filterByMoreTransfer) {
+          filteredFlights = filteredFlights.filter(
+            (flight) =>
+              flight.flight.legs[0].segments.length === 1 &&
+              flight.flight.legs[1].segments.length === 1
+          )
+        } else if (!filterByCountTransfer.filterByMoreTransfer) {
+          filteredFlights = [...filteredFlights]
+        }
+
+        return filteredFlights.slice(0, count)
+      default:
+        return filteredFlights.slice(0, count)
+    }
+  }
+
+  const handlePriceFilter = (price, arr) => {
+    let filteredCostArray = []
+    if (!arr) {
+      filteredCostArray = [...memoFlights]
+    } else {
+      filteredCostArray = [...arr]
+    }
+
+    filteredCostArray = filteredCostArray.filter(
+      (flight) =>
+        +flight.flight.price.total.amount >= +price.minPrice &&
+        +flight.flight.price.total.amount <= +price.maxPrice
+    )
+    return filteredCostArray.slice(0, count)
+  }
+
+  const filterAll = () => {
+    let filteredArray = []
+    filteredArray = [...handleFilter(filterValue)]
+    filteredArray = [...handlePriceFilter(price, filteredArray)]
+    filteredArray = [...handleSort(sortValue, filteredArray)]
+    return filteredArray
   }
 
   useEffect(() => {
-    const data = loadFlights().flights.slice(0, count)
-    setFlights(data)
-  }, [count])
+    filterAll()
+    setFlights(filterAll())
+  }, [count, price, sortValue, filterValue])
 
   return (
     <>
       <CardList flights={flights} handleShowMore={handleShowMore} />
-      <Sidebar onSort={handleSort} onFilter={handleFilter} />
+      <Sidebar
+        onSort={handleSort}
+        onFilter={handleFilter}
+        onCheck={filterByCountTransfer}
+        setCheck={setFilterByCountTransfer}
+        onFilterPrice={handlePriceFilter}
+        filterPrice={setPrice}
+        price={price}
+        setFilterValue={setFilterValue}
+        setSortValue={setSortValue}
+      />
     </>
   )
 }

@@ -1,9 +1,10 @@
 import React from 'react'
 
 const Sort = (props) => {
-  const { onSort } = props
+  const { onSort, setSortValue } = props
 
   const handleSort = (event) => {
+    setSortValue(event.target.value)
     onSort(event.target.value)
   }
 

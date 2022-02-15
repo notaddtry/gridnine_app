@@ -1,9 +1,25 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 const Filter = (props) => {
-  const { onFilter } = props
+  const { onFilter, onCheck, setCheck, setFilterValue } = props
+  const refOneTransfer = useRef('')
+  const refMoreTransfer = useRef('')
 
   const handleFilter = (event) => {
+    if (event.target.value === refOneTransfer.current.value) {
+      setCheck({
+        ...onCheck,
+        filterByOneTransfer: !onCheck.filterByOneTransfer,
+        filterByMoreTransfer: false,
+      })
+    } else if (event.target.value === refMoreTransfer.current.value) {
+      setCheck({
+        ...onCheck,
+        filterByOneTransfer: false,
+        filterByMoreTransfer: !onCheck.filterByMoreTransfer,
+      })
+    }
+    setFilterValue(event.target.value)
     onFilter(event.target.value)
   }
 
@@ -17,6 +33,8 @@ const Filter = (props) => {
             id="checkbox1"
             value="ONE_TRANSFER"
             onChange={handleFilter}
+            checked={onCheck.filterByOneTransfer}
+            ref={refOneTransfer}
           />
           <label htmlFor="checkbox1">1 пересадка</label>
         </div>
@@ -27,6 +45,8 @@ const Filter = (props) => {
             id="checkbox2"
             value="NO_TRANSFER"
             onChange={handleFilter}
+            checked={onCheck.filterByMoreTransfer}
+            ref={refMoreTransfer}
           />
           <label htmlFor="checkbox2">Без пересадок</label>
         </div>
