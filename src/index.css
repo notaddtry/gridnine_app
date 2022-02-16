@@ -48,8 +48,7 @@ code {
   display: flex;
   flex-direction: column;
 }
-.card-trip_header {
-}
+
 .card-trip_main {
   display: flex;
   flex-direction: column;
@@ -66,15 +65,12 @@ code {
   justify-content: center;
   margin: 0.25rem 0px;
 }
-.card-trip_footer {
-}
+
 .btn-select {
   border: none;
   background: orange;
   color: #fff;
   padding: 0.5rem;
-}
-.btn_show-more {
 }
 
 .sidebar_wrapper {

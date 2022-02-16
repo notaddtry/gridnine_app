@@ -2,6 +2,7 @@ import React from 'react'
 import Sort from './Sort'
 import Filter from './Filter'
 import Price from './Price'
+import Company from './Company'
 
 const Sidebar = (props) => {
   const {
@@ -14,6 +15,10 @@ const Sidebar = (props) => {
     setSortValue,
     setFilterValue,
     setCheck,
+    onFilterCompany,
+    setFilterCompanyValue,
+    onCheckCompany,
+    setCheckCompany,
   } = props
 
   return (
@@ -29,6 +34,12 @@ const Sidebar = (props) => {
         onFilterPrice={onFilterPrice}
         filterPrice={filterPrice}
         price={price}
+      />
+      <Company
+        onFilterCompany={onFilterCompany}
+        setCheckCompany={setCheckCompany}
+        onCheckCompany={onCheckCompany}
+        setFilterCompanyValue={setFilterCompanyValue}
       />
     </div>
   )

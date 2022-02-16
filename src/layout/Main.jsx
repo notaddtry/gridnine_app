@@ -18,6 +18,11 @@ const Main = () => {
     minPrice: 0,
     maxPrice: Infinity,
   })
+  const [filterCompany, setFilterCompany] = useState({
+    AirFrance: false,
+    Aeroflot: false,
+  })
+  const [filterCompanyValue, setFilterCompanyValue] = useState('')
 
   const handleShowMore = () => {
     setCount((count) => count + 5)
@@ -58,15 +63,15 @@ const Main = () => {
     }
 
     switch (chooseFilter) {
-      case 'ONE_TRANSFER':
+      case 'MORE_TRANSFER':
         if (filterByCountTransfer.filterByOneTransfer) {
           filteredFlights = filteredFlights.filter(
             (flight) =>
-              flight.flight.legs[0].segments.length === 2 &&
-              flight.flight.legs[1].segments.length === 2
+              flight.flight.legs[0].segments.length >= 2 &&
+              flight.flight.legs[1].segments.length >= 2
           )
         } else if (!filterByCountTransfer.filterByOneTransfer) {
-          filteredFlights = [...filteredFlights] //TODO
+          return (filteredFlights = [...filteredFlights])
         }
 
         return filteredFlights.slice(0, count)
@@ -104,9 +109,47 @@ const Main = () => {
     return filteredCostArray.slice(0, count)
   }
 
+  const handleFilterCompany = (chooseFilterCompany, arr) => {
+    let filteredFlights = []
+    if (!arr) {
+      filteredFlights = [...memoFlights]
+    } else {
+      filteredFlights = [...arr]
+    }
+
+    switch (chooseFilterCompany) {
+      case 'AirFrance':
+        if (filterCompany.AirFrance) {
+          filteredFlights = filteredFlights.filter(
+            (flight) => flight.flight.carrier.caption === 'Air France'
+          )
+        } else if (!filterCompany.AirFrance) {
+          return (filteredFlights = [...filteredFlights])
+        }
+
+        return filteredFlights.slice(0, count)
+
+      case 'Aeroflot':
+        if (filterCompany.Aeroflot) {
+          filteredFlights = filteredFlights.filter(
+            (flight) =>
+              flight.flight.carrier.caption ===
+              'Аэрофлот - российские авиалинии'
+          )
+        } else if (!filterCompany.Aeroflot) {
+          filteredFlights = [...filteredFlights]
+        }
+
+        return filteredFlights.slice(0, count)
+      default:
+        return filteredFlights.slice(0, count)
+    }
+  }
+
   const filterAll = () => {
     let filteredArray = []
     filteredArray = [...handleFilter(filterValue)]
+    filteredArray = [...handleFilterCompany(filterCompanyValue, filteredArray)]
     filteredArray = [...handlePriceFilter(price, filteredArray)]
     filteredArray = [...handleSort(sortValue, filteredArray)]
     return filteredArray
@@ -115,7 +158,7 @@ const Main = () => {
   useEffect(() => {
     filterAll()
     setFlights(filterAll())
-  }, [count, price, sortValue, filterValue])
+  }, [count, price, sortValue, filterByCountTransfer, filterCompany])
 
   return (
     <>
@@ -130,6 +173,10 @@ const Main = () => {
         price={price}
         setFilterValue={setFilterValue}
         setSortValue={setSortValue}
+        onFilterCompany={handleFilterCompany}
+        setFilterCompanyValue={setFilterCompanyValue}
+        onCheckCompany={filterCompany}
+        setCheckCompany={setFilterCompany}
       />
     </>
   )

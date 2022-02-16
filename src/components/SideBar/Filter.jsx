@@ -31,7 +31,7 @@ const Filter = (props) => {
           <input
             type="checkbox"
             id="checkbox1"
-            value="ONE_TRANSFER"
+            value="MORE_TRANSFER"
             onChange={handleFilter}
             checked={onCheck.filterByOneTransfer}
             ref={refOneTransfer}
