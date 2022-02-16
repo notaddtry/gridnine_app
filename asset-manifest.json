@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/gridnine_app/static/css/main.041ff172.css",
-    "main.js": "/gridnine_app/static/js/main.6893dff2.js",
+    "main.js": "/gridnine_app/static/js/main.4db83335.js",
     "index.html": "/gridnine_app/index.html",
     "main.041ff172.css.map": "/gridnine_app/static/css/main.041ff172.css.map",
-    "main.6893dff2.js.map": "/gridnine_app/static/js/main.6893dff2.js.map"
+    "main.4db83335.js.map": "/gridnine_app/static/js/main.4db83335.js.map"
   },
   "entrypoints": [
     "static/css/main.041ff172.css",
-    "static/js/main.6893dff2.js"
+    "static/js/main.4db83335.js"
   ]
 }
